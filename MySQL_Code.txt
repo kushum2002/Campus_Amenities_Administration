@@ -1,0 +1,267 @@
+Microsoft Windows [Version 10.0.22000.1219]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\Kushum>cd C:\Program Files\MySQL\MySQL Server 8.0\bin\
+
+C:\Program Files\MySQL\MySQL Server 8.0\bin>mysql -u root -p
+Enter password: ********
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 8
+Server version: 8.0.31 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2022, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> Create database guesthouse;
+Query OK, 1 row affected (0.06 sec)
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| db9                |
+| emp                |
+| guesthouse         |
+| information_schema |
+| library_db1        |
+| library_db10       |
+| library_db2        |
+| library_db3        |
+| library_db4        |
+| library_db5        |
+| library_db7        |
+| library_db8        |
+| library_db9        |
+| mysql              |
+| online_shopping    |
+| performance_schema |
+| sys                |
++--------------------+
+17 rows in set (0.04 sec)
+
+mysql> use guesthouse;
+Database changed
+mysql> create table guest(
+    -> GHID VARCHAR(4),
+    -> GName VARCHAR(100),
+    -> ContactNum INT,
+    -> DOB DATE,
+    -> Email VARCHAR(100),
+    -> PRIMARY KEY(GHID));
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> create table food(
+    -> FID VARCHAR(4),
+    -> FName VARCHAR(100),
+    -> Price INT,
+    -> PRIMARY KEY(FID));
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> create table FoodBookings(
+    -> FBID VARCHAR(5),
+    -> GID );
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ')' at line 3
+mysql> ALTER TABLE guest
+    -> rename column GHID to GID;
+Query OK, 0 rows affected (0.04 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> create table FoodBookings(
+    -> FBID VARCHAR(5),
+    -> GID VARCHAR(4),
+    -> FID VARCHAR(4),
+    -> FName VARCHAR(100),
+    -> Quantity INT,
+    -> OrderPrice INT,
+    -> DateOfOrder DATE,
+    -> PaymentStatus INT,
+    -> FOREIGN KEY(GID) REFERENCES guest(GID),
+    -> FOREIGN KEY(FID) REFERENCES food(FID),
+    -> PRIMARY KEY(FBID));
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> create table room(
+    -> RoomID VARCHAR(3),
+    -> Rent INT,
+    -> Category VARCHAR(1),
+    -> PRIMARY KEY(RoomID));
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> create table RoomBookings(
+    -> RBID VARCHAR(5),
+    -> RoomID VARCHAR(3),
+    -> GID VARCHAR(4),
+    -> DateOfBooking DATE,
+    -> ApprovalStatus VARCHAR(1),
+    -> StartDate DATE,
+    -> EndDate DATE,
+    -> Price INT,
+    -> PRIMARY KEY(RBID),
+    -> FOREIGN KEY(GID) REFERENCES guest(GID),
+    -> FOREIGN KEY(RoomID) REFERENCES room(RoomID));
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> create table staff(
+    -> STID varchar(5),
+    -> STName varchar(100),
+    -> ContactNumber INT,
+    -> DOB date,
+    -> Email varchar(100),
+    -> SType varchar(100),
+    -> primary key(STID));
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> create table StaffDutyRoster(
+    -> `date` date,
+    -> GHID varchar(5),
+    -> Shift_1 varchar(1000),
+    -> Shift_2 varchar(1000),
+    -> primary key(GHID));
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> create table expenditures(
+    -> `Year` year,
+    -> Month int,
+    -> GHID varchar(5),
+    -> TotalSalaryPaid int,
+    -> TotalRoomCosts int,
+    -> OtherBills int);
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> describe table guest;
++----+-------------+-------+------------+------+---------------+------+---------+------+------+----------+-------+
+| id | select_type | table | partitions | type | possible_keys | key  | key_len | ref  | rows | filtered | Extra |
++----+-------------+-------+------------+------+---------------+------+---------+------+------+----------+-------+
+|  1 | SIMPLE      | guest | NULL       | ALL  | NULL          | NULL | NULL    | NULL |    1 |   100.00 | NULL  |
++----+-------------+-------+------------+------+---------------+------+---------+------+------+----------+-------+
+1 row in set, 1 warning (0.01 sec)
+
+mysql> describe table food;
++----+-------------+-------+------------+------+---------------+------+---------+------+------+----------+-------+
+| id | select_type | table | partitions | type | possible_keys | key  | key_len | ref  | rows | filtered | Extra |
++----+-------------+-------+------------+------+---------------+------+---------+------+------+----------+-------+
+|  1 | SIMPLE      | food  | NULL       | ALL  | NULL          | NULL | NULL    | NULL |    1 |   100.00 | NULL  |
++----+-------------+-------+------------+------+---------------+------+---------+------+------+----------+-------+
+1 row in set, 1 warning (0.00 sec)
+
+mysql> describe table FoodBookings;
++----+-------------+--------------+------------+------+---------------+------+---------+------+------+----------+-------+
+| id | select_type | table        | partitions | type | possible_keys | key  | key_len | ref  | rows | filtered | Extra |
++----+-------------+--------------+------------+------+---------------+------+---------+------+------+----------+-------+
+|  1 | SIMPLE      | FoodBookings | NULL       | ALL  | NULL          | NULL | NULL    | NULL |    1 |   100.00 | NULL  |
++----+-------------+--------------+------------+------+---------------+------+---------+------+------+----------+-------+
+1 row in set, 1 warning (0.01 sec)
+
+mysql> describe table room;
++----+-------------+-------+------------+------+---------------+------+---------+------+------+----------+-------+
+| id | select_type | table | partitions | type | possible_keys | key  | key_len | ref  | rows | filtered | Extra |
++----+-------------+-------+------------+------+---------------+------+---------+------+------+----------+-------+
+|  1 | SIMPLE      | room  | NULL       | ALL  | NULL          | NULL | NULL    | NULL |    1 |   100.00 | NULL  |
++----+-------------+-------+------------+------+---------------+------+---------+------+------+----------+-------+
+1 row in set, 1 warning (0.00 sec)
+
+mysql> describe guest;
++------------+--------------+------+-----+---------+-------+
+| Field      | Type         | Null | Key | Default | Extra |
++------------+--------------+------+-----+---------+-------+
+| GID        | varchar(4)   | NO   | PRI | NULL    |       |
+| GName      | varchar(100) | YES  |     | NULL    |       |
+| ContactNum | int          | YES  |     | NULL    |       |
+| DOB        | date         | YES  |     | NULL    |       |
+| Email      | varchar(100) | YES  |     | NULL    |       |
++------------+--------------+------+-----+---------+-------+
+5 rows in set (0.03 sec)
+
+mysql> describe food;
++-------+--------------+------+-----+---------+-------+
+| Field | Type         | Null | Key | Default | Extra |
++-------+--------------+------+-----+---------+-------+
+| FID   | varchar(4)   | NO   | PRI | NULL    |       |
+| FName | varchar(100) | YES  |     | NULL    |       |
+| Price | int          | YES  |     | NULL    |       |
++-------+--------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> describe FoodBookings;
++---------------+--------------+------+-----+---------+-------+
+| Field         | Type         | Null | Key | Default | Extra |
++---------------+--------------+------+-----+---------+-------+
+| FBID          | varchar(5)   | NO   | PRI | NULL    |       |
+| GID           | varchar(4)   | YES  | MUL | NULL    |       |
+| FID           | varchar(4)   | YES  | MUL | NULL    |       |
+| FName         | varchar(100) | YES  |     | NULL    |       |
+| Quantity      | int          | YES  |     | NULL    |       |
+| OrderPrice    | int          | YES  |     | NULL    |       |
+| DateOfOrder   | date         | YES  |     | NULL    |       |
+| PaymentStatus | int          | YES  |     | NULL    |       |
++---------------+--------------+------+-----+---------+-------+
+8 rows in set (0.00 sec)
+
+mysql> describe room;
++----------+------------+------+-----+---------+-------+
+| Field    | Type       | Null | Key | Default | Extra |
++----------+------------+------+-----+---------+-------+
+| RoomID   | varchar(3) | NO   | PRI | NULL    |       |
+| Rent     | int        | YES  |     | NULL    |       |
+| Category | varchar(1) | YES  |     | NULL    |       |
++----------+------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> describe RoomBookings;
++----------------+------------+------+-----+---------+-------+
+| Field          | Type       | Null | Key | Default | Extra |
++----------------+------------+------+-----+---------+-------+
+| RBID           | varchar(5) | NO   | PRI | NULL    |       |
+| RoomID         | varchar(3) | YES  | MUL | NULL    |       |
+| GID            | varchar(4) | YES  | MUL | NULL    |       |
+| DateOfBooking  | date       | YES  |     | NULL    |       |
+| ApprovalStatus | varchar(1) | YES  |     | NULL    |       |
+| StartDate      | date       | YES  |     | NULL    |       |
+| EndDate        | date       | YES  |     | NULL    |       |
+| Price          | int        | YES  |     | NULL    |       |
++----------------+------------+------+-----+---------+-------+
+8 rows in set (0.01 sec)
+
+mysql> describe staff;
++---------------+--------------+------+-----+---------+-------+
+| Field         | Type         | Null | Key | Default | Extra |
++---------------+--------------+------+-----+---------+-------+
+| STID          | varchar(5)   | NO   | PRI | NULL    |       |
+| STName        | varchar(100) | YES  |     | NULL    |       |
+| ContactNumber | int          | YES  |     | NULL    |       |
+| DOB           | date         | YES  |     | NULL    |       |
+| Email         | varchar(100) | YES  |     | NULL    |       |
+| SType         | varchar(100) | YES  |     | NULL    |       |
++---------------+--------------+------+-----+---------+-------+
+6 rows in set (0.00 sec)
+
+mysql> describe StaffDutyRoster;
++---------+---------------+------+-----+---------+-------+
+| Field   | Type          | Null | Key | Default | Extra |
++---------+---------------+------+-----+---------+-------+
+| date    | date          | YES  |     | NULL    |       |
+| GHID    | varchar(5)    | NO   | PRI | NULL    |       |
+| Shift_1 | varchar(1000) | YES  |     | NULL    |       |
+| Shift_2 | varchar(1000) | YES  |     | NULL    |       |
++---------+---------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql> describe expenditures;
++-----------------+------------+------+-----+---------+-------+
+| Field           | Type       | Null | Key | Default | Extra |
++-----------------+------------+------+-----+---------+-------+
+| Year            | year       | YES  |     | NULL    |       |
+| Month           | int        | YES  |     | NULL    |       |
+| GHID            | varchar(5) | YES  |     | NULL    |       |
+| TotalSalaryPaid | int        | YES  |     | NULL    |       |
+| TotalRoomCosts  | int        | YES  |     | NULL    |       |
+| OtherBills      | int        | YES  |     | NULL    |       |
++-----------------+------------+------+-----+---------+-------+
+6 rows in set (0.00 sec)
+
+mysql>
